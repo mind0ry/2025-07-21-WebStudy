@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,17 +11,69 @@
   margin: 0px auto;
   width: 960px;
 }
+p {
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
+}
 </style>
 </head>
 <body>
   <div class="container">
-    <div class="row text-center">
-      <a href="../food/type.do?type=한식" class="btn btn-sm btn-danger">한식</a>
-      <a href="../food/type.do?type=양식" class="btn btn-sm btn-success">양식</a>
-      <a href="../food/type.do?type=중식" class="btn btn-sm btn-primary">중식</a>
-      <a href="../food/type.do?type=일식" class="btn btn-sm btn-warning">일식</a>
-      <a href="../food/type.do?type=분식" class="btn btn-sm btn-info">분식</a>
-    </div>
+   <div class="row text-center">
+    <a href="../music/type.do?cno=1" class="btn btn-sm btn-info">TOP200</a>
+    <a href="../music/type.do?cno=2" class="btn btn-sm btn-danger">가요</a>
+    <a href="../music/type.do?cno=3" class="btn btn-sm btn-success">POP</a>
+    <a href="../music/type.do?cno=4" class="btn btn-sm btn-primary">OST</a>
+    <a href="../music/type.do?cno=5" class="btn btn-sm btn-warning">트롯</a>
+    <a href="../music/type.do?cno=6" class="btn btn-sm btn-info">JAZZ</a>
+    <a href="../music/type.do?cno=7" class="btn btn-sm btn-danger">CLASSIC</a>
+    
+   </div>
+   <div style="height: 20px"></div>
+   <div class="row">
+   <%--
+      for(FoodVO vo:list)
+      {
+   --%>
+    <c:forEach var="vo" items="${list }">
+      <div class="col-md-3">
+	    <div class="thumbnail">
+	      <a href="../music/detail.do?no=${vo.no }&page=${curpage}">
+	        <img src="${vo.poster }" style="width:230px;height: 150px">
+	        <div class="caption">
+	          <p>${vo.title }</p>
+	          <p style="font-size: 10px">${vo.singer}</p>
+	        </div>
+	      </a>
+	    </div>
+	  </div>
+	</c:forEach>
+   </div>
+   <div class="row text-center" style="margin-top: 10px">
+     <ul class="pagination">
+      <%--
+        if(startPage>1)
+        {
+        
+       --%>
+      <c:if test="${startPage>1 }">
+        <li><a href="../music/type.do?page=${startPage-1 }&cno=${cno}">&lt;</a></li>
+      </c:if>
+      <%--
+        for(int i=startPage;i<=endPage;i++)
+      --%>
+      <c:forEach var="i" begin="${startPage }" end="${endPage }">
+       <li ${i==curpage?"class=active":""}><a href="../music/type.do?page=${i }&cno=${cno}">${i }</a></li>
+      </c:forEach>
+      <%--
+        if(endPage<totalpage)
+       --%>
+      <c:if test="${endPage<totalpage }">
+       <li><a href="../music/type.do?page=${endPage+1 }&cno=${cno}">&gt;</a></li>
+      </c:if>
+     </ul>
+   </div>
   </div>
 </body>
 </html>

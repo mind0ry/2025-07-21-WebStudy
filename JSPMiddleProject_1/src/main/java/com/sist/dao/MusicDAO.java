@@ -31,4 +31,52 @@ public class MusicDAO {
 		session.close();
 		return vo;
 	}
+	public static List<MusicVO> musicTypeListData(Map map) {
+		   List<MusicVO> list=null;
+		   try {
+			SqlSession session=ssf.openSession();
+			list=session.selectList("musicTypeListData",map);
+			session.close();
+		   } catch (Exception ex) {
+		     	ex.printStackTrace();
+		   }
+		   return list;
+	   }
+	   public static int musicTypeTotalPage(String cno) {
+		   int total=0;
+		   try {
+			   SqlSession session=ssf.openSession();
+			   total=session.selectOne("musicTypeTotalPage",cno);
+			   session.close();
+		   } catch (Exception ex) {
+			  ex.printStackTrace();
+		   }
+		   return total;
+	   }
+	   public static List<MusicVO> musicFindListData(Map map)
+	   {
+		   List<MusicVO> list=null;
+		   try
+		   {
+			   SqlSession session=ssf.openSession();
+		       list=session.selectList("musicFindListData",map);
+		       session.close();
+		   }catch(Exception ex)
+		   {
+			  System.out.println("musicFindListData:"+ex.getMessage());
+		   }
+		   
+		   return list;
+	   }
+	   public static int musicFindTotalPage(String cno) {
+		   int total=0;
+		   try {
+			   SqlSession session=ssf.openSession();
+			   total=session.selectOne("musicFindTotalPage",cno);
+			   session.close();
+		   } catch (Exception ex) {
+			  ex.printStackTrace();
+		   }
+		   return total;
+	   }
 }
