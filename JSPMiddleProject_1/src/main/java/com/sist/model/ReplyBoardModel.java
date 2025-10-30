@@ -3,6 +3,7 @@ package com.sist.model;
 import com.sist.controller.Controller;
 import com.sist.controller.RequestMapping;
 
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import com.sist.vo.*;
@@ -31,6 +32,7 @@ public class ReplyBoardModel {
 		request.setAttribute("list", list);
 		request.setAttribute("curpage", curpage);
 		request.setAttribute("totalpage", totalpage);
+		request.setAttribute("msg", "관리자가 삭제한 게시물입니다");
 		request.setAttribute("main_jsp", "../replyboard/list.jsp");
 		return "../main/main.jsp";
 	}
@@ -79,7 +81,7 @@ public class ReplyBoardModel {
 		String no=request.getParameter("no");
 		ReplyBoardVO vo=ReplyBoardDAO.boardUpdateData(Integer.parseInt(no));
 		// update.jsp로 전송
-		request.setAttribute("vo", vo);
+		request.setAttribute("vo", vo); // ${} = request.getAttribute
 		request.setAttribute("main_jsp", "../replyboard/update.jsp");
 		return "../main/main.jsp";
 	}
@@ -87,8 +89,64 @@ public class ReplyBoardModel {
 	
 	@RequestMapping("board/reply.do")
 	public String board_reply(HttpServletRequest request,HttpServletResponse response) {
-		
+		String no=request.getParameter("no");
+		request.setAttribute("no", no);
 		request.setAttribute("main_jsp", "../replyboard/reply.jsp");
 		return "../main/main.jsp";
+	}
+	@RequestMapping("board/update_ok.do")
+	public void board_update_ok(HttpServletRequest request,HttpServletResponse response) {
+		String name=request.getParameter("name");
+		String subject=request.getParameter("subject");
+		String content=request.getParameter("content");
+		String pwd=request.getParameter("pwd");
+		String no=request.getParameter("no");
+		
+		ReplyBoardVO vo=new ReplyBoardVO();
+		vo.setName(name);
+		vo.setContent(content);
+		vo.setSubject(subject);
+		vo.setPwd(pwd);
+		vo.setNo(Integer.parseInt(no));
+		
+		// DAO 연동
+		String res=ReplyBoardDAO.boardUpdate(vo);
+		// 결과값을 받아서 => Ajax로 전송
+		try {
+			response.setContentType("text/html;charset=UTF-8");
+			PrintWriter out=response.getWriter();
+			out.write(res);
+		} catch (Exception ex) {}
+	}
+	@RequestMapping("board/reply_ok.do")
+	public String board_reply_ok(HttpServletRequest request,HttpServletResponse response) {
+		String name=request.getParameter("name");
+		String subject=request.getParameter("subject");
+		String content=request.getParameter("content");
+		String pwd=request.getParameter("pwd");
+		String no=request.getParameter("pno");
+		
+		ReplyBoardVO vo=new ReplyBoardVO();
+		vo.setName(name);
+		vo.setContent(content);
+		vo.setSubject(subject);
+		vo.setPwd(pwd);
+		int pno=Integer.parseInt(no);
+		// DB 연동
+		ReplyBoardDAO.boardReplyInsert(pno, vo);
+		return "redirect:../board/list.do";
+	}
+	@RequestMapping("board/delete.do")
+	public void board_delete(HttpServletRequest request,HttpServletResponse response) { // void => javaScript 형식 전송
+		String no=request.getParameter("no");
+		String pwd=request.getParameter("pwd");
+		
+		String res=ReplyBoardDAO.boardDelete(Integer.parseInt(no), pwd);
+		
+		try {
+			response.setContentType("text/html;charset=UTF-8");
+			PrintWriter out=response.getWriter();
+			out.write(res);
+		} catch (Exception ex) {}
 	}
 }
